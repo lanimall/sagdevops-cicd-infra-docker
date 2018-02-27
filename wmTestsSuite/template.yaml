@@ -1,0 +1,26 @@
+alias: container
+
+environments:
+  default:
+    repo.product: products
+    repo.fix:     fixes
+    designer.fixes: []
+
+layers:
+  runtime:
+    productRepo: ${repo.product}
+    fixRepo:     ${repo.fix}
+    templates:
+      - designer
+
+templates:
+  designer:
+    fixes: ${designer.fixes}
+    products:
+      LDev: # Service Development
+      vcs:  # Local version control
+      GWMDes: # Unit Test Framework
+
+provision:
+  default:
+    runtime: local

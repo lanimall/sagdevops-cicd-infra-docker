@@ -1,0 +1,37 @@
+alias: container
+description: Software AG Deployer
+
+environments:
+  default:  
+    repo.product: products
+    repo.fix:     fixes
+    deployer.instance.name: default
+    deployer.primary.port: 5555
+    deployer.diagnostic.port: 9999
+    deployer.jmx.port: 8094
+    deployer.fixes:
+      - wMFix.integrationServer.Core
+
+layers:
+  runtime:
+    productRepo: ${repo.product}            # install products from
+    fixRepo:     ${repo.fix}                # install fixes from
+    templates:   
+      - deployer
+
+templates:
+  deployer:
+    fixes: ${deployer.fixes}
+    products:
+      GWM_IS:   # Unit Test Framework
+      Deployer: 
+      integrationServer:
+        ${deployer.instance.name}:
+          primary.port: ${deployer.primary.port}
+          diagnostic.port: ${deployer.diagnostic.port}
+          jmx.port: ${deployer.jmx.port}
+          package.list: WmDeployer,WmNUMDeployer,WmBrokerDeployer,WmAgileAppsDeployer,WmServiceMock
+
+provision:
+  default:
+    runtime: local

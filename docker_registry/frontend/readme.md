@@ -1,0 +1,1 @@
+1 - Placeholder if setting up SSL for registry frontend

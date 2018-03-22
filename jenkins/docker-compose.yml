@@ -1,0 +1,25 @@
+version: '3.3'
+
+services:
+  jenkins:
+    image: registry.docker.tests:5000/softwareag/jenkins:lts
+    build:
+      dockerfile: Dockerfile
+      context: .
+      args:
+       - HOST_DOCKER_VERSION=17.12.0~ce-0~debian
+       - HOST_DOCKER_GID=992
+       - HOST_DOCKER_COMPOSE_VERSION=1.19.0
+    restart: always
+    privileged: true
+    ports:
+      - "8080:8080"
+      - "50000:50000"
+    environment:
+      - "JAVA_OPTS=-Dhudson.footerURL=http://www.softwareaggov.com -Djava.util.logging.config.file=/usr/share/jenkins/ref/log.properties" #-Djenkins.install.runSetupWizard=false
+      - "JENKINS_OPTS=--prefix=/jenkins"
+    network_mode: "host"
+    volumes:
+      - /var/jenkins_home:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/docker/certs.d/:/etc/docker/certs.d/

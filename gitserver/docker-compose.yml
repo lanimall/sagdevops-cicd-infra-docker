@@ -1,14 +1,11 @@
 version: '3.3'
 
 networks:
-    sagdevops:
-      driver: bridge
+  sagdevops:
 
 volumes:
-    db-data:
-      driver: local
-    gogs-data:
-      driver: local
+  gogs-db-data:
+  gogs-data:
       
 services:
     gogsserver:
@@ -30,9 +27,10 @@ services:
       networks:
        - sagdevops
       volumes:
-       - "gogs-data:/data"
+       - gogs-data:/data
       depends_on:
        - postgres
+
     postgres:
       image: postgres:9.5
       restart: always
@@ -41,6 +39,6 @@ services:
        - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD}"
        - "POSTGRES_DB=gogs"
       volumes:
-       - "db-data:/var/lib/postgresql/data"
+       - gogs-db-data:/var/lib/postgresql/data
       networks:
        - sagdevops

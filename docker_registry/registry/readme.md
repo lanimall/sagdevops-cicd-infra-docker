@@ -1,3 +1,8 @@
+# Registry General Setup
+############################
+
+## SSL Setup
+
 1 - Generate your own certificate:
 
 $ mkdir -p certs; cd certs 
@@ -8,10 +13,16 @@ $ openssl req \
   
 Be sure to use the target host name as a CN
 
-2 - Trust the certs on all the docker nodes by copying the certs in fthe following locations:
+2 - Trust the certs on all the docker nodes by copying the certs in the following locations:
 
 $ sudo mkdir -p /etc/docker/certs.d/registry.docker.tests:5000
 $ sudo cp certs/registry.docker.tests.crt /etc/docker/certs.d/registry.docker.tests:5000/ca.crt
+
+Standalone Instructions:
+
+3 - 
+
+Swarm Instructions:
 
 3 - On the SWARM manager, add the certs to the swarm secret
 

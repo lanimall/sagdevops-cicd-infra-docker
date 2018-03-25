@@ -37,24 +37,24 @@ This will take a few minutes, but when it's done you will have a strong DH group
 
 3. Build the image using docker-compose
 
-  1. Embedding the certs in the docker image
+ * Embedding the certs in the docker image
   
-    The above should have added the certs in the right place for the DockerFile to copy them in the resulting NGINX docker image.
-    Simply run the following to build the custom NGINX image with the certs and everythign else needed to proxy the registry / regiustry-frontend
+The above should have added the certs in the right place for the DockerFile to copy them in the resulting NGINX docker image.
+Simply run the following to build the custom NGINX image with the certs and everythign else needed to proxy the registry / regiustry-frontend
 
 ```
 docker-compose build
 ```
 
-  2. Using volumes to provide the certs to the docker container
+ * Using volumes instead to not hard-embed the certs to the docker container
    
-    Alternatitevy, if you prefer not to copy these certs, you can map each of them using docker volumes, as shown in the docker-compose extract below:
+If you prefer not to copy these certs, you can map each of them using docker volumes, as shown in the docker-compose extract below:
 
 ```
-    volumes:
-      - /some/local/path/registry.docker.tests.key:/etc/ssl/private/registry.docker.tests.key
-      - /some/local/path/registry.docker.tests.crt:/etc/ssl/certs/registry.docker.tests.crt
-      - /some/local/path/dhparam.pem:/etc/ssl/certs/dhparam.pem
+volumes:
+  - /some/local/path/registry.docker.tests.key:/etc/ssl/private/registry.docker.tests.key
+  - /some/local/path/registry.docker.tests.crt:/etc/ssl/certs/registry.docker.tests.crt
+  - /some/local/path/dhparam.pem:/etc/ssl/certs/dhparam.pem
 ```
 
 4. Start/Stop all the services
@@ -81,10 +81,10 @@ Since these certs are self-signed, we'll need some extra setup (essentially forc
   
   * Copy the public cert to the right place, as follow:
 
-```bash
-$ sudo mkdir -p /etc/docker/certs.d/registry.docker.tests:443
-$ sudo cp /some/local/path/registry.docker.tests.crt /etc/docker/certs.d/registry.docker.tests:443/ca.crt
-```
+    ```bash
+    $ sudo mkdir -p /etc/docker/certs.d/registry.docker.tests:443
+    $ sudo cp /some/local/path/registry.docker.tests.crt /etc/docker/certs.d/registry.docker.tests:443/ca.crt
+    ```
 
   * Restart docker daemon.
 
@@ -94,15 +94,15 @@ $ sudo cp /some/local/path/registry.docker.tests.crt /etc/docker/certs.d/registr
 
     * Create a file in "~/.docker/daemon.json" and add the insecure-registries as follow:
     
-```
-{
-  "debug" : true,
-  "insecure-registries" : [
-    "registryweb.docker.tests:443"
-  ],
-  "experimental" : false
-}
-```
+    ```
+    {
+      "debug" : true,
+      "insecure-registries" : [
+        "registryweb.docker.tests:443"
+      ],
+      "experimental" : false
+    }
+    ```
 
     * Restart docker daemon.
 

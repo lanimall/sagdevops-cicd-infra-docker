@@ -3,7 +3,7 @@
 #get script dir so we can call this script from anywhere
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 DOCKER_COMPOSE_FILE="$SCRIPT_DIR/docker-compose-build.yml"
-REGISTRY=registry.docker.tests:5000
+REGISTRY=registry.docker.tests
 
 build(){
     #if no param passed, build all in the docker-compose

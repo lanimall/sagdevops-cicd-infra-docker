@@ -1,8 +1,15 @@
 version: '3.3'
 
+networks:
+  sagdevops:
+    external: true
+
+volumes:
+  jenkinshome:
+
 services:
   jenkins:
-    image: registry.docker.tests:5000/softwareag/jenkins:lts
+    image: registry.docker.tests/softwareag/jenkins:lts
     build:
       dockerfile: Dockerfile
       context: .
@@ -18,8 +25,9 @@ services:
     environment:
       - "JAVA_OPTS=-Dhudson.footerURL=http://www.softwareaggov.com -Djava.util.logging.config.file=/usr/share/jenkins/ref/log.properties" #-Djenkins.install.runSetupWizard=false
       - "JENKINS_OPTS=--prefix=/jenkins"
-    network_mode: "host"
+    networks:
+      - sagdevops
     volumes:
-      - /var/jenkins_home:/var/jenkins_home
+      - jenkinshome:/var/jenkins_home
       - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/docker/certs.d/:/etc/docker/certs.d/
+##- /etc/docker/certs.d/:/etc/docker/certs.d/

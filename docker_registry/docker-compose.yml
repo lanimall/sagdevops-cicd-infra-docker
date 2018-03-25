@@ -2,9 +2,14 @@ version: '3.3'
 
 networks:
   sagdevops:
+    external: true
+
+volumes:
+  registrydata:
 
 services:
   nginx:
+    image: registry.docker.tests/softwareag/registryproxy:latest
     build:
       dockerfile: nginx/Dockerfile
       context: .
@@ -35,7 +40,7 @@ services:
     expose:
       - "5000"
     volumes:
-      - ${PWD}/registrydata:/var/lib/registry:rw
+      - registrydata:/var/lib/registry:rw
 
   # Setup front-end
   registryfrontend:

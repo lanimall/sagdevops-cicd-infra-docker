@@ -2,7 +2,7 @@ version: "3.0"
 
 services:
   wmtestsuite:
-    image: registry.docker.tests:5000/softwareag/wmtestsuite:10.1
+    image: softwareag/wmtestsuite:10.1
     build:
       context: .
       dockerfile: Dockerfile.unmanaged
@@ -11,7 +11,7 @@ services:
       - "9999:9999"
 
   wmtestsuite_managed:
-    image: registry.docker.tests:5000/softwareag/wmtestsuite_managed:10.1
+    image: softwareag/wmtestsuite_managed:10.1
     build:
       context: .    
       dockerfile: Dockerfile.managed

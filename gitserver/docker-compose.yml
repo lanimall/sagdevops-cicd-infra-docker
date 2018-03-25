@@ -2,6 +2,7 @@ version: '3.3'
 
 networks:
   sagdevops:
+    external: true
 
 volumes:
   gogs-db-data:
@@ -9,7 +10,7 @@ volumes:
       
 services:
     gogsserver:
-      image: registry.docker.tests:5000/softwareag/gogs:latest
+      image: registry.docker.tests/softwareag/gitserver:latest
       build:
         dockerfile: Dockerfile
         context: .

@@ -1,0 +1,30 @@
+alias: updates
+description: Install latest updates for CCE
+version: 10.1
+
+environments:
+  default:
+    repo.product: products
+    repo.fix:     fixes
+    dbc.fixes:
+      - wMFix.DatabaseScripts
+      - wMFix.CommonDatabaseInstaller
+
+layers:
+  default:
+    productRepo: ${repo.product}            # install products from
+    fixRepo:     ${repo.fix}                # install fixes from
+  dbc:
+    templates:
+      - dbc
+
+templates:
+  dbc:
+    products:
+      DatabaseComponentConfigurator:
+      DatabaseScripts:
+    fixes: ${dbc.fixes}
+
+provision:
+  default:
+    dbc: local

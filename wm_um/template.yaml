@@ -11,7 +11,7 @@ environments:
     um.memory.init:      64                 # memory configuration
     um.memory.max:       128                # memory configuration
     um.memory.direct:    1G                 # memory configuration
-    um.fixes:            []                # all fixes
+    um.fixes:            ALL                # all fixes
 
 layers:
   runtime:

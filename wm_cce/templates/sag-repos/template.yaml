@@ -1,0 +1,26 @@
+alias: sag-repos
+description: Default master repositories registration
+
+environments:
+  default:  # Input parameters
+    repo.products.location: http://sdc.softwareag.com/dataservewebM101/repository/
+    repo.products.description: ${}
+    repo.fixes.location: ${}
+    repo.fixes.description: ${}
+    repo.username: ${}           # REQUIRED, repo username
+    repo.password: ${}           # REQUIRED, repo password
+
+repositories:
+  product:
+    products:
+      location: ${repo.products.location}
+      username: ${repo.username}
+      password: ${repo.password}
+      description: ${repo.products.description}
+
+  fix:
+    fixes:
+      location: ${repo.fixes.location}
+      username: ${repo.username}
+      password: ${repo.password}
+      description: ${repo.fixes.description}

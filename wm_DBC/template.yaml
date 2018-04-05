@@ -1,0 +1,28 @@
+alias: container
+
+environments:
+  default:
+    repo.product: products
+    repo.fix:     fixes
+    dbc.fixes:
+      - wMFix.DatabaseScripts
+
+layers:
+  default:
+    productRepo: ${repo.product}            # install products from
+    fixRepo:     ${repo.fix}                # install fixes from
+  runtime:
+    templates:
+      - dbc
+
+templates:
+  dbc:
+    fixes: ${dbc.fixes}
+    description: DB Schema Management using DatabaseComponentConfigurator
+    products:
+      DatabaseComponentConfigurator:
+      DatabaseScripts:
+
+provision:
+  default:
+    runtime: local

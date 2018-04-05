@@ -1,0 +1,6 @@
+[submodule "wm_cce/antcc"]
+	path = wm_cce/antcc
+	url = git@github.com:lanimall/sagdevops-antcc.git
+[submodule "wm_dbcreator/antcc"]
+	path = wm_dbcreator/antcc
+	url = git@github.com:lanimall/sagdevops-antcc.git

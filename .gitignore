@@ -3,6 +3,7 @@ licenseKey.xml
 *license.xml
 *license.key
 *_*.xml
+build/
 
 # IDE
 .idea

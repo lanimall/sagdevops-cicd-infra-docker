@@ -1,0 +1,28 @@
+version: "3"
+
+networks:
+  sagdevops:
+
+services:
+  wMIS_db:
+    image: softwareag/oracle-xe-11g
+    networks:
+      - sagdevops
+    ports:
+      - "49160:22"
+      - "49161:1521"
+    environment: 
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_DISABLE_ASYNCH_IO=true
+      - ORACLE_ENABLE_XDB=false
+
+  # command central server has DBC installed...so can use this as is
+  dbsetup:
+    image: store/softwareag/commandcentral:10.1.0.1-server
+    volumes:
+      - ./:/src
+    networks:
+      - sagdevops
+    command: sagccant setup -Denv=wm_is -Dbuild.dir=/tmp -Dinstall.dir=/opt/softwareag
+    depends_on:
+      - wMIS_db

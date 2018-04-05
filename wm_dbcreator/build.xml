@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<project name="main" xmlns="antlib:org.apache.tools.ant" basedir="." default="apply" xmlns:if="ant:if" xmlns:unless="ant:unless">
+
+    <!-- standard header start -->
+    <dirname file="${ant.file.main}" property="project.dir" />
+    <property name="build.dir" location="${project.dir}/build" />
+
+    <property environment="env" />
+    <condition property="antcc.home" value="${env.ANTCC_HOME}" else="antcc">
+        <isset property="env.ANTCC_HOME"/>
+    </condition>
+    <!--<import file="${antcc.home}/build.xml" />-->
+    <import file="antcc/main.xml" />
+
+    <target name="setup" depends="startcc,setup_nostart" />
+
+    <target name="setup_nostart" depends="waitcc,waitForDBUp,dbconfig" />
+
+    <target name="waitForDBUp" depends="_setenvproperties,sagenvInit">
+        <property file="${env.properties}" />
+        <waitfor maxwait="120" maxwaitunit="second" checkevery="1" checkeveryunit="second">
+            <socket server="${db.host}" port="${db.port}"/>
+        </waitfor>
+    </target>
+
+    <target name="dbconfig" description="Apply dbconfig template" depends="_setenvproperties,sagenvInit" >
+        <antcall target="sagenv.apply">
+            <param name="t" value="templates/dbconfig"/>
+        </antcall>
+    </target>
+
+    <macrodef name="set-property-if-nonempty">
+        <attribute name="name" />
+        <attribute name="if-property-isset" />
+        <attribute name="value" default="${@{if-property-isset}}" />
+
+        <sequential>
+            <condition property="@{name}" value="@{value}">
+                <and>
+                    <isset property="@{if-property-isset}" />
+                    <not>
+                        <equals arg1="${@{if-property-isset}}" arg2="" />
+                    </not>
+                </and>
+            </condition>
+        </sequential>
+    </macrodef>
+
+    <target name="_setenvproperties" depends="sagenvInit">
+        <set-property-if-nonempty name="db.host" if-property-isset="env.db.host" />
+        <set-property-if-nonempty name="db.port" if-property-isset="env.db.port" />
+        <set-property-if-nonempty name="db.product.version" if-property-isset="env.db.product.version" />
+        <set-property-if-nonempty name="db.component.version" if-property-isset="env.db.component.version" />
+        <set-property-if-nonempty name="db.products" if-property-isset="env.db.products" />
+
+        <!-- saving to env file because there's no other way...we need to pass these values using that env file -->
+        <propertyfile file="${env.properties}">
+            <entry key="db.host" value="${db.host}" if:set="db.host" />
+            <entry key="db.port" value="${db.port}" if:set="db.port" />
+            <entry key="db.product.version" value="${db.product.version}" if:set="db.product.version" />
+            <entry key="db.component.version" value="${db.component.version}" if:set="db.component.version" />
+            <entry key="db.products" value="${db.products}" if:set="db.products" />
+        </propertyfile>
+
+        <property file="${env.properties}" />
+    </target>
+</project>

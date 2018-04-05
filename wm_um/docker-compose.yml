@@ -1,17 +1,17 @@
 version: "3.0"
 
 services:
-  unmanaged:
+  um:
     image: softwareag/umserver:10.1
     build:
       context: .
-      dockerfile: Dockerfile.unmanaged
+      dockerfile: Dockerfile
     ports:
       - "9000:9000"
     volumes: 
       - ./licenseKey.xml:/opt/softwareag/UniversalMessaging/server/license/licence.xml
 
-  managed:
+  um_managed:
     image: softwareag/umserver_managed:10.1
     build:
       context: .    

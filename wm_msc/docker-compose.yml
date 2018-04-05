@@ -5,7 +5,7 @@ services:
     image: softwareag/msc:10.1
     build:
       context: .
-      dockerfile: Dockerfile.unmanaged
+      dockerfile: Dockerfile
     ports:
       - "5555:5555"
       - "9999:9999"

@@ -4,7 +4,7 @@ services:
   deployer:
     build:
       context: .
-      dockerfile: Dockerfile.unmanaged
+      dockerfile: Dockerfile
     image: softwareag/deployer:10.1
     ports:
       - "5555:5555"

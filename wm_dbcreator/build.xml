@@ -4,29 +4,77 @@
     <!-- standard header start -->
     <dirname file="${ant.file.main}" property="project.dir" />
     <property name="build.dir" location="${project.dir}/build" />
+    <property name="install.dir" location="/opt/softwareag" />
 
     <property environment="env" />
-    <condition property="antcc.home" value="${env.ANTCC_HOME}" else="antcc">
-        <isset property="env.ANTCC_HOME"/>
-    </condition>
-    <!--<import file="${antcc.home}/build.xml" />-->
+    <!--<condition property="antcc.home" value="${env.ANTCC_HOME}" else="antcc">-->
+        <!--<isset property="env.ANTCC_HOME"/>-->
+    <!--</condition>-->
     <import file="antcc/main.xml" />
+
+    <!-- force env file to be "runtime" as it is the file that should be used by the template apply command -->
+    <property name="env" value="runtime" />
+
+    <target name="_localinit" depends="_copyDefaultEnvToRuntimeEnv, sagenvInit, _setenvproperties">
+    </target>
+
+    <target name="_copyDefaultEnvToRuntimeEnv">
+        <condition property="default.env.properties" value="environments/default/env.properties">
+            <available file="environments/default/env.properties"/>
+        </condition>
+        <condition property="default.env.properties" value="environments/default.properties">
+            <available file="environments/default.properties"/>
+        </condition>
+        <condition property="default.env.properties.exists" >
+            <available file="${default.env.properties}"/>
+        </condition>
+
+        <copy file="${default.env.properties}" tofile="environments/runtime.properties" overwrite="true" if:set="default.env.properties.exists"/>
+    </target>
 
     <target name="setup" depends="startcc,setup_nostart" />
 
     <target name="setup_nostart" depends="waitcc,waitForDBUp,dbconfig" />
 
-    <target name="waitForDBUp" depends="_setenvproperties,sagenvInit">
+    <target name="waitForDBUp" depends="_localinit">
         <property file="${env.properties}" />
         <waitfor maxwait="120" maxwaitunit="second" checkevery="1" checkeveryunit="second">
             <socket server="${db.host}" port="${db.port}"/>
         </waitfor>
     </target>
 
-    <target name="dbconfig" description="Apply dbconfig template" depends="_setenvproperties,sagenvInit" >
+    <target name="dbconfig" description="Apply dbconfig template" depends="_localinit" >
         <antcall target="sagenv.apply">
             <param name="t" value="templates/dbconfig"/>
         </antcall>
+    </target>
+
+    <target name="_setenvproperties" depends="sagenvInit">
+        <set-property-if-nonempty name="db.name" if-property-isset="env.db.name" />
+        <set-property-if-nonempty name="db.type" if-property-isset="env.db.type" />
+        <set-property-if-nonempty name="db.host" if-property-isset="env.db.host" />
+        <set-property-if-nonempty name="db.port" if-property-isset="env.db.port" />
+        <set-property-if-nonempty name="db.product.version" if-property-isset="env.db.product.version" />
+        <set-property-if-nonempty name="db.component.version" if-property-isset="env.db.component.version" />
+        <set-property-if-nonempty name="db.products" if-property-isset="env.db.products" />
+        <set-property-if-nonempty name="db.username" if-property-isset="env.db.username" />
+        <set-property-if-nonempty name="db.password" if-property-isset="env.db.password" />
+
+        <!-- saving to env file because there's no other way...we need to pass these values using that env file -->
+        <propertyfile file="${env.properties}">
+            <entry key="db.name" value="${db.name}" if:set="db.name" />
+            <entry key="db.type" value="${db.type}" if:set="db.type" />
+            <entry key="db.host" value="${db.host}" if:set="db.host" />
+            <entry key="db.port" value="${db.port}" if:set="db.port" />
+            <entry key="db.username" value="${db.username}" if:set="db.username" />
+            <entry key="db.password" value="${db.password}" if:set="db.password" />
+
+            <entry key="db.product.version" value="${db.product.version}" if:set="db.product.version" />
+            <entry key="db.component.version" value="${db.component.version}" if:set="db.component.version" />
+            <entry key="db.products" value="${db.products}" if:set="db.products" />
+        </propertyfile>
+
+        <property file="${env.properties}" />
     </target>
 
     <macrodef name="set-property-if-nonempty">
@@ -45,23 +93,4 @@
             </condition>
         </sequential>
     </macrodef>
-
-    <target name="_setenvproperties" depends="sagenvInit">
-        <set-property-if-nonempty name="db.host" if-property-isset="env.db.host" />
-        <set-property-if-nonempty name="db.port" if-property-isset="env.db.port" />
-        <set-property-if-nonempty name="db.product.version" if-property-isset="env.db.product.version" />
-        <set-property-if-nonempty name="db.component.version" if-property-isset="env.db.component.version" />
-        <set-property-if-nonempty name="db.products" if-property-isset="env.db.products" />
-
-        <!-- saving to env file because there's no other way...we need to pass these values using that env file -->
-        <propertyfile file="${env.properties}">
-            <entry key="db.host" value="${db.host}" if:set="db.host" />
-            <entry key="db.port" value="${db.port}" if:set="db.port" />
-            <entry key="db.product.version" value="${db.product.version}" if:set="db.product.version" />
-            <entry key="db.component.version" value="${db.component.version}" if:set="db.component.version" />
-            <entry key="db.products" value="${db.products}" if:set="db.products" />
-        </propertyfile>
-
-        <property file="${env.properties}" />
-    </target>
 </project>

@@ -4,6 +4,19 @@ networks:
   sagdevops:
 
 services:
+  db:
+    image: softwareag/base-oracle-xe-11g
+    networks:
+      - sagdevops
+    ports:
+      - "49160:22"
+      - "49161:1521"
+      - "8080:8080"
+    environment:
+      - ORACLE_ALLOW_REMOTE=true
+      - ORACLE_DISABLE_ASYNCH_IO=true
+      - ORACLE_ENABLE_XDB=false
+
   dbc:
     image: softwareag/dbc_managed:10.1
     hostname: dbc
@@ -35,20 +48,7 @@ services:
     environment:
       - CC_SERVER=cce
       - CC_TEMPLATE=dbc
-    command: sagccant setup_nostart -Dcc=test -Denv=bpms -Dbuild.dir=/tmp -Dinstall.dir=/opt/softwareag
+    command: sagccant setup_nostart -Dcc=test -Denv=bpms
     depends_on:
       - db
       - cce
-
-  db:
-    image: softwareag/oracle-xe-11g
-    networks:
-      - sagdevops
-    ports:
-      - "49160:22"
-      - "49161:1521"
-      - "8080:8080"
-    environment: 
-      - ORACLE_ALLOW_REMOTE=true
-      - ORACLE_DISABLE_ASYNCH_IO=true
-      - ORACLE_ENABLE_XDB=false

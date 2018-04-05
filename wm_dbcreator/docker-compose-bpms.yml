@@ -5,7 +5,7 @@ networks:
 
 services:
   wMBPMS_db:
-    image: softwareag/oracle-xe-11g
+    image: softwareag/base-oracle-xe-11g
     networks:
       sagdevops:
         aliases:
@@ -26,11 +26,15 @@ services:
     networks:
       - sagdevops
     environment:
+      - db.name=WEBM
+      - db.type=oracle
       - db.host=wMBPMS_db
       - db.port=1521
+      - db.username=webmbpms
+      - db.password=strong123!
       - db.product.version=latest
       - db.component.version=latest
       - db.products=[IS,BPM,MWS]
-    command: sagccant setup -Dinstall.dir=/opt/softwareag
+    command: sagccant setup
     depends_on:
       - wMBPMS_db

@@ -29,7 +29,7 @@ environments:
     db.tablespace.index: WEBMINDX           # for Oracle/DB2
     
     # Schemas
-    db.components:        [STR, ALL]         # Storage and all components by default
+    db.components:        ${}
     db.products:          ${}
     db.component.version: ${}
     db.product.version:   ${}

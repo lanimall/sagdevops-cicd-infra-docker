@@ -5,7 +5,7 @@ networks:
 
 services:
   wMIS_db:
-    image: softwareag/oracle-xe-11g
+    image: softwareag/base-oracle-xe-11g
     networks:
       - sagdevops
     ports:
@@ -23,6 +23,16 @@ services:
       - ./:/src
     networks:
       - sagdevops
-    command: sagccant setup -Denv=wm_is -Dbuild.dir=/tmp -Dinstall.dir=/opt/softwareag
+    environment:
+      - db.name=WEBM
+      - db.type=oracle
+      - db.host=wMIS_db
+      - db.port=1521
+      - db.username=webmis
+      - db.password=strong123!
+      - db.product.version=latest
+      - db.component.version=latest
+      - db.products=[IS]
+    command: sagccant setup
     depends_on:
       - wMIS_db

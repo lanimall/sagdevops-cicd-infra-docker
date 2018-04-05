@@ -7,8 +7,8 @@ services:
   db:
     build:
       context: .
-      dockerfile: Dockerfile
-    image: softwareag/oracle-xe-11g
+      dockerfile: Dockerfile.baseoracle
+    image: softwareag/base-oracle-xe-11g
     networks:
       - sagdevops
     ports:

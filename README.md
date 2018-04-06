@@ -8,11 +8,28 @@ Some standard components like Jenkins, Docker Registry, Git servers are also pro
 
 ## Requirements
 
-All docker-compose files in this project use the same docker network "sagdevops".
+### Docker common resources
+
+Of course, Docker should be installed!
+
+And all docker-compose files in this project use the same docker network "sagdevops".
 Let's create it first:
 
 ```
 $ docker network create sagdevops
+```
+
+### Base Builder image on Docker Store
+
+All the SoftwareAG docker images rely on the "commandcentral builder" image located on docker store
+(store/softwareag/commandcentral:10.1.0.1-builder) 
+
+To access that image, we'll first need to check it out on docker store at https://store.docker.com/images/softwareag-commandcentral
+Then, on our workstation, we'll have to docker login (with the same credentials used to check out the image on the docker store) and pull it.
+
+```
+docker login
+docker pull store/softwareag/commandcentral:10.1.0.1-builder
 ```
 
 ## Start Docker Registry
@@ -50,22 +67,7 @@ $ docker-compose up -d
 
 Accessible at http://localhost:8080/jenkins/
 
-## SoftwareAG images
-
-## Pre-requisite
-
-### Base image on Docker Store
-
-All the SoftwareAG docker images rely on the "commandcentral builder" image located on docker store
-(store/softwareag/commandcentral:10.1.0.1-builder) 
-
-To access that image, we'll first need to check it out on docker store at https://store.docker.com/images/softwareag-commandcentral
-Then, on our workstation, we'll have to docker login (with the same credentials used to check out the image on the docker store) and pull it.
-
-```
-docker login
-docker pull store/softwareag/commandcentral:10.1.0.1-builder
-```
+## Create SoftwareAG images
 
 ### SoftwareAG software repository
 

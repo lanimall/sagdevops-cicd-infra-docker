@@ -1,9 +1,9 @@
 # MUST start with builder image to run provisioning using template.yaml
-
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+#FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+FROM softwareag/custom/commandcentral:10.1.0.1-builder as builder
 
 # This is the same as the unmanaged one + management support
-FROM registry.docker.tests:5000/softwareag/deployer:10.1
+FROM softwareag/deployer:10.1
 
 ### ADD management support
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client

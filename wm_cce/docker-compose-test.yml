@@ -13,6 +13,9 @@ services:
       - "8091:8091"
 
   setup:
+    build:
+      context: .
+      dockerfile: Dockerfile.cli
     image: softwareag/commandcentral:10.1-cli-latest
     environment:
       - REPO_USR

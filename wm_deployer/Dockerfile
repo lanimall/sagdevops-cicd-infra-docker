@@ -1,5 +1,6 @@
 # MUST start with builder image to run provisioning using template.yaml
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+#FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+FROM softwareag/custom/commandcentral:10.1.0.1-builder as builder
 
 # ADOPTED from docker file created by UM install
 FROM centos:7
@@ -45,9 +46,6 @@ COPY --from=builder $SAG_HOME/profiles/IS_${INSTANCE_NAME}/ $SAG_HOME/profiles/I
 
 # expose any ports from runtimes defined in the template.yaml
 EXPOSE 5555 9999
-
-# copy license file in the right place
-COPY licenseKey.xml $SAG_HOME/IntegrationServer/instances/$INSTANCE_NAME/config/licenseKey.xml
 
 #add entrypoint in the global bin
 ADD *.sh /usr/bin

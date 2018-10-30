@@ -1,7 +1,7 @@
 version: '3.3'
 
 networks:
-  sag-network:
+  sagdevops:
     external: true
 
 secrets:
@@ -45,7 +45,7 @@ services:
     networks:
       - sag-network
     environment:
-      - ENV_MODE_BROWSE_ONLY=true
+      - ENV_MODE_BROWSE_ONLY=false
       - ENV_DOCKER_REGISTRY_HOST=registry
       - ENV_DOCKER_REGISTRY_PORT=5000
       - ENV_DOCKER_REGISTRY_USE_SSL=1

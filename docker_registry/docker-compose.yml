@@ -4,57 +4,42 @@ networks:
   sagdevops:
     external: true
 
-volumes:
-  registrydata:
-
 services:
-  nginx:
-    image: registry.docker.tests/softwareag/registryproxy:latest
-    build:
-      dockerfile: nginx/Dockerfile
-      context: .
-      args:
-        baselocaldir: nginx
-    restart: always
-    networks:
-      sagdevops:
-        aliases:
-          - registry.docker.tests
-    ports:
-      - "80:80"
-      - "443:443"
-    links:
-      - registryv2
-      - registryfrontend
-    depends_on:
-      - registryv2
-
   # Actual docker registry
   registryv2:
     image: registry:2
     environment:
       - REGISTRY_HTTP_ADDR=:5000
-    restart: always
+      - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.docker.tests.crt
+      - REGISTRY_HTTP_TLS_KEY=/certs/registry.docker.tests.key
+#      - REGISTRY_AUTH=htpasswd
+#      - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+#      - REGISTRY_AUTH_HTPASSWD_REALM=registry-realm
+    ports:
+      - "5000:5000"
     networks:
       - sagdevops
-    expose:
-      - "5000"
+        aliases:
+          - registry.docker.tests
     volumes:
-      - registrydata:/var/lib/registry:rw
+      - /mnt/docker_registry/registrydata:/var/lib/registry:rw
+      - /mnt/docker_registry/certs:/certs:ro
+    restart: always
 
   # Setup front-end
   registryfrontend:
     image: konradkleine/docker-registry-frontend:v2
     networks:
       - sagdevops
-    expose:
-      - "80"
+    ports:
+      - "80:80"
     links:
       - registryv2
     depends_on:
       - registryv2
     environment:
+      - ENV_MODE_BROWSE_ONLY=false
       - ENV_DOCKER_REGISTRY_HOST=registry.docker.tests
-      - ENV_DOCKER_REGISTRY_PORT=443
+      - ENV_DOCKER_REGISTRY_PORT=5000
       - ENV_DOCKER_REGISTRY_USE_SSL=1
     restart: always

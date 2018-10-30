@@ -18,7 +18,7 @@ services:
     ports:
       - "5000:5000"
     networks:
-      - sagdevops
+      sagdevops:
         aliases:
           - registry.docker.tests
     volumes:

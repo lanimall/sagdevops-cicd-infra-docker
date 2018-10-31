@@ -1,9 +1,10 @@
+ARG PARENT_BUILDER
+ARG PARENT_IMAGE
+
 # MUST start with builder image to run provisioning using template.yaml
+FROM $PARENT_BUILDER as builder
 
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
-
-# This is the same as the unmanaged one + management support
-FROM softwareag/msc:10.1
+FROM $PARENT_IMAGE
 
 ### ADD management support
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client

@@ -2,19 +2,36 @@ version: "3.0"
 
 services:
   msc:
-    image: softwareag/msc:10.1
+    image: ${REGISTRY}softwareag/msc:${TAG}
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        PARENT_BUILDER: store/softwareag/commandcentral:10.1.0.8-builder
+        PARENT_IMAGE: centos:7
+    ports:
+      - "5555:5555"
+      - "9999:9999"
+
+  msc_licensed:
+    image: ${REGISTRY}softwareag/msc_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.licensed
+      args:
+        PARENT_IMAGE: ${REGISTRY}softwareag/msc:10.1
     ports:
       - "5555:5555"
       - "9999:9999"
 
   msc_managed:
-    image: softwareag/msc_managed:10.1
+    image: ${REGISTRY}softwareag/msc_managed:${TAG}
     build:
       context: .    
       dockerfile: Dockerfile.managed
+      args:
+        PARENT_BUILDER: store/softwareag/commandcentral:10.1.0.8-builder
+        PARENT_IMAGE: ${REGISTRY}softwareag/msc:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
@@ -26,8 +43,26 @@ services:
     links:
       - cc      
 
+  msc_managed_licensed:
+    image: ${REGISTRY}softwareag/msc_managed_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.managed.licensed
+      args:
+        PARENT_IMAGE: ${REGISTRY}softwareag/msc_managed:${TAG}
+    ports:
+      - "5555:5555"
+      - "9999:9999"
+      - "8092:8092"
+      - "8093:8093"
+    environment:
+      - CC_SERVER=cc
+      - CC_AUTO_REGISTER=1
+    links:
+      - cc
+
   cc:
-    image: store/softwareag/commandcentral:10.1.0.1-server
+    image: store/softwareag/commandcentral:10.1.0.8-server
     ports:
       - "8090:8090"
       - "8091:8091"

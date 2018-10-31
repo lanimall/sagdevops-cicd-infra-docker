@@ -1,8 +1,10 @@
-# Use the sagdevops-ci-assets-builder to get the latest SAG assets for ci/ccd
-FROM registry.docker.tests:5000/softwareag/sagdevops-ci-assets-builder as builder
+ARG PARENT_BUILDER
+ARG PARENT_IMAGE
 
-# This is the standard ABE image
-FROM softwareag/abe:10.1
+# MUST start with builder image to run provisioning using template.yaml
+FROM $PARENT_BUILDER as builder
+
+FROM $PARENT_IMAGE
 
 ARG SAG_CI_HOME
 

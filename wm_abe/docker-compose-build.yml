@@ -1,0 +1,59 @@
+version: "3.0"
+
+services:
+  abe_builder:
+    image: custom/softwareag/abe_builder:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.builder
+      args:
+        PARENT_BUILDER_IMAGE: store/softwareag/commandcentral-builder:${TAG}
+        REPO_PRODUCT_URL: $REPO_PRODUCT_URL
+        REPO_FIX_URL: $REPO_FIX_URL
+        REPO_USERNAME: $REPO_USERNAME
+        REPO_PASSWORD: $REPO_PASSWORD
+        LICENSES_URL: $LICENSES_URL
+
+  abe_simple:
+    image: custom/softwareag/abe_simple:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+      args:
+        PARENT_BUILDER_IMAGE: store/softwareag/commandcentral-builder:${TAG}
+
+  abe:
+    image: ${REGISTRY}softwareag/abe:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.unmanaged
+      args:
+        PARENT_BUILDER: custom/softwareag/abe_builder:${TAG}
+        PARENT_IMAGE: centos:7
+    depends_on:
+      - abe_builder
+
+  ## This is the same as the unmanaged one + management support
+  abe_managed:
+    image: ${REGISTRY}softwareag/abe_managed:${TAG}
+    build:
+      context: .    
+      dockerfile: Dockerfile.managed
+      args:
+        PARENT_BUILDER: custom/softwareag/abe_builder:${TAG}
+        PARENT_IMAGE: ${REGISTRY}softwareag/abe:${TAG}
+    depends_on:
+      - abe_builder
+      - abe
+
+  abe_sagcicd:
+    image: ${REGISTRY}softwareag/abe_sagcicd:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.sagcicd
+      args:
+        PARENT_BUILDER: ${REGISTRY}softwareag/sagdevops-ci-assets-builder:latest
+        PARENT_IMAGE: ${REGISTRY}softwareag/abe:${TAG}
+    depends_on:
+      - abe_builder
+      - abe

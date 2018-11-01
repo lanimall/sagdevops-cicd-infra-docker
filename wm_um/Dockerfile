@@ -1,5 +1,5 @@
 # MUST start with builder image to run provisioning using template.yaml
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+FROM store/softwareag/commandcentral:10.1.0.8-builder as builder
 
 # ADOPTED from docker file created by UM install
 FROM centos:7

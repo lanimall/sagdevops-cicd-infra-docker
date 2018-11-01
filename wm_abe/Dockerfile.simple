@@ -1,0 +1,8 @@
+ARG PARENT_BUILDER_IMAGE
+
+FROM ${PARENT_BUILDER_IMAGE}
+
+#add entrypoint in the global bin
+ADD *.sh /usr/bin
+
+ENTRYPOINT ["entrypoint.sh"]

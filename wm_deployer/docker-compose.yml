@@ -2,19 +2,25 @@ version: "3.0"
 
 services:
   deployer:
+    image: ${REGISTRY}softwareag/deployer:10.1
     build:
       context: .
       dockerfile: Dockerfile
-    image: softwareag/deployer:10.1
+      args:
+        PARENT_BUILDER: store/softwareag/commandcentral:10.1.0.8-builder
+        PARENT_IMAGE: centos:7
     ports:
       - "5555:5555"
       - "9999:9999"
 
   deployer_managed:
+    image: ${REGISTRY}softwareag/deployer_managed:10.1
     build:
       context: .    
       dockerfile: Dockerfile.managed
-    image: softwareag/deployer-managed:10.1
+      args:
+        PARENT_BUILDER: store/softwareag/commandcentral:10.1.0.8-builder
+        PARENT_IMAGE: ${REGISTRY}softwareag/deployer:10.1
     ports:
       - "5555:5555"
       - "9999:9999"
@@ -27,19 +33,23 @@ services:
       - cc   
 
   deployer_licensed:
+    image: ${REGISTRY}softwareag/deployer_licensed:10.1
     build:
       context: .
       dockerfile: Dockerfile.licensed
-    image: softwareag/deployer-licensed:10.1
+      args:
+        PARENT_IMAGE: ${REGISTRY}softwareag/deployer:10.1
     ports:
       - "5555:5555"
       - "9999:9999"
 
   deployer_managed_licensed:
+    image: ${REGISTRY}softwareag/deployer_managed_licensed:10.1
     build:
       context: .
       dockerfile: Dockerfile.managed.licensed
-    image: softwareag/deployer-managed-licensed:10.1
+      args:
+        PARENT_IMAGE: ${REGISTRY}softwareag/deployer_managed:10.1
     ports:
       - "5555:5555"
       - "9999:9999"

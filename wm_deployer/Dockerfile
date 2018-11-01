@@ -1,9 +1,10 @@
-# MUST start with builder image to run provisioning using template.yaml
-#FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
-FROM softwareag/custom/commandcentral:10.1.0.1-builder as builder
+ARG PARENT_BUILDER
+ARG PARENT_IMAGE
 
-# ADOPTED from docker file created by UM install
-FROM centos:7
+# MUST start with builder image to run provisioning using template.yaml
+FROM $PARENT_BUILDER as builder
+
+FROM $PARENT_IMAGE
 
 MAINTAINER fabien.sanglier@softwareaggov.com
 

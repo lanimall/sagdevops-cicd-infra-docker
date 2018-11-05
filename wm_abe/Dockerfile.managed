@@ -6,10 +6,21 @@ FROM $PARENT_BUILDER as builder
 
 FROM $PARENT_IMAGE
 
-### ADD management support
+ENV ABE_HOME=$SAG_HOME/common/AssetBuildEnvironment
+ENV ANT_HOME $SAG_HOME/common/lib/ant
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client
-ENV PATH=$PATH:$CC_CLI_HOME/bin
-COPY --from=builder $SAG_HOME/profiles/SPM/ $SAG_HOME/profiles/SPM/
-COPY --from=builder $SAG_HOME/CommandCentral/client/ $SAG_HOME/CommandCentral/client/
-EXPOSE 8092 8093
-### end manage
+ENV EXIT_AFTER_COMMAND true
+
+ENV PATH=$PATH:/bin:/usr/bin:$ABE_HOME/bin:$ANT_HOME/bin:$CC_CLI_HOME/bin
+
+COPY --from=builder --chown=1724:1724 $SAG_HOME/ $SAG_HOME/
+
+LABEL com.softwareag.product="ABE" \com.softwareag.product.version="10.3"
+
+#add entrypoint in the global bin
+ADD *.sh /usr/bin
+
+# change workdir
+WORKDIR /src
+
+ENTRYPOINT ["entrypoint.sh"]

@@ -1,26 +1,26 @@
-alias: container
+alias: sag-abe
 description: Software AG Asset Build Environment
 
 environments:
-  default:  
+  default:
     repo.product: products
     repo.fix:     fixes
-    abe.fixes:
-      - wMFix.acdl
+    abe.fixes:    ALL
 
 layers:
-  abe:
-    productRepo: ${repo.product}            # install products from
-    fixRepo:     ${repo.fix}                # install fixes from
-    templates:   
+  runtime:
+    productRepo: ${repo.product}
+    fixRepo:     ${repo.fix}
+    templates:
       - abe
 
 templates:
   abe:
     fixes: ${abe.fixes}
     products:
+      CLI:
       acdl:
 
 provision:
   default:
-    abe: local
+    runtime: node

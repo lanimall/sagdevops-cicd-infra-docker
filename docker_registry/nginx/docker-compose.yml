@@ -4,17 +4,12 @@ networks:
   sagdevops:
     external: true
 
-volumes:
-  registrydata:
-
 services:
   nginx:
     image: registry.docker.tests/softwareag/registryproxy:latest
     build:
-      dockerfile: nginx/Dockerfile
+      dockerfile: Dockerfile
       context: .
-      args:
-        baselocaldir: nginx
     restart: always
     networks:
       sagdevops:
@@ -23,9 +18,14 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    volumes:
+      - /mnt/docker_registry/certs/registry.docker.tests.key:/etc/ssl/private/registry.docker.tests.key
+      - /mnt/docker_registry/certs/registry.docker.tests.crt:/etc/ssl/certs/registry.docker.tests.crt
+      - /mnt/docker_registry/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
+      - /mnt/docker_registry/auth/registry.passwd:/etc/nginx/registry.passwd
     links:
       - registryv2
-      - registryfrontend
+      - registryweb
     depends_on:
       - registryv2
 
@@ -34,16 +34,17 @@ services:
     image: registry:2
     environment:
       - REGISTRY_HTTP_ADDR=:5000
+      - REGISTRY_STORAGE_DELETE_ENABLED=true
     restart: always
     networks:
       - sagdevops
     expose:
       - "5000"
     volumes:
-      - registrydata:/var/lib/registry:rw
+      - /mnt/docker_registry/registrydata:/var/lib/registry:rw
 
   # Setup front-end
-  registryfrontend:
+  registryweb:
     image: konradkleine/docker-registry-frontend:v2
     networks:
       - sagdevops

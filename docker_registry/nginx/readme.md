@@ -19,7 +19,7 @@ To changing these URLs, you'll need to:
 1. Generate the self signed certs:
 
 ```
-openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout nginx/ssl/private/registry.docker.tests.key -out nginx/ssl/certs/registry.docker.tests.crt
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout ssl/private/registry.docker.tests.key -out ssl/certs/registry.docker.tests.crt
 ```
 
 For the "common name (CN)", pick the right domain name: "registry.docker.tests"
@@ -30,10 +30,10 @@ While we are using OpenSSL, we should also create a strong Diffie-Hellman group,
 We can do this by typing:
 
 ```
-openssl dhparam -out nginx/ssl/certs/dhparam.pem 2048
+openssl dhparam -out ssl/certs/dhparam.pem 2048
 ```
 
-This will take a few minutes, but when it's done you will have a strong DH group at nginx/etc/ssl/certs/dhparam.pem that we will use in our configuration.
+This will take a few minutes, but when it's done you will have a strong DH group at ssl/certs/dhparam.pem that we will use in our configuration.
 
 3. Build the image using docker-compose
 
@@ -52,9 +52,9 @@ If you prefer not to copy these certs, you can map each of them using docker vol
 
 ```
 volumes:
-  - /some/local/path/registry.docker.tests.key:/etc/ssl/private/registry.docker.tests.key
-  - /some/local/path/registry.docker.tests.crt:/etc/ssl/certs/registry.docker.tests.crt
-  - /some/local/path/dhparam.pem:/etc/ssl/certs/dhparam.pem
+  - ssl/private/registry.docker.tests.key:/etc/ssl/private/registry.docker.tests.key
+  - ssl/certs/registry.docker.tests.crt:/etc/ssl/certs/registry.docker.tests.crt
+  - ssl/certs/dhparam.pem:/etc/ssl/certs/dhparam.pem
 ```
 
 4. Start/Stop all the services

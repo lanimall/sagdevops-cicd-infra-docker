@@ -21,25 +21,27 @@ version: "3.2"
 
 services:
   base:
-    image: ${REG}softwareag/base:${TAG}
+    image: ${REG}softwareag_ccbuild/base:${TAG}
     build:
       context: base-os/
       args:
         - BASE_IMAGE=centos:7
 
   java:
-    image: ${REG}softwareag/java:${TAG}
+    image: ${REG}softwareag_ccbuild/java:${TAG}
     build:
       context: base-java/
       args:
-        - BASE_IMAGE=${REG}softwareag/base:${TAG}
+        - BASE_IMAGE=${REG}softwareag_ccbuild/base:${TAG}
         - NODE_IMAGE=${CC_REG}softwareag/commandcentral-node:${TAG}
     depends_on: 
       - base
 
-  ## this register the repos, the creds, adds the licenses, making a ready to go builder for all the rest!
+  ## This register the repos, the creds, adds the licenses, making a ready to go builder for all the rest
+  ## WARNING: Only push to a docker registry if the account used for the repo, the licenses, etc... can be shared accross a team
+  ## which is why I don't include the ${REG} prefix on image (but you can add it if that's ok with your use case)
   cc_builder:
-    image: ${REG}softwareag/commandcentral-builder:${TAG}
+    image: softwareag_ccbuild/commandcentral-builder:${TAG}
     ports:
       - 8091 # CCE
       - 8092 # SPM

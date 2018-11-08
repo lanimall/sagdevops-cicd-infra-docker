@@ -2,16 +2,10 @@ version: "3.0"
 
 services:
   dbc:
-    image: softwareag/dbc:10.1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${REG}softwareag_ccbuild/dbc:${TAG}
 
   dbc_managed:
-    image: softwareag/dbc_managed:10.1
-    build:
-      context: .    
-      dockerfile: Dockerfile.managed
+    image: ${REG}softwareag_ccbuild/dbc_managed:${TAG}
     ports:
       - "8092:8092"
       - "8093:8093"
@@ -22,7 +16,7 @@ services:
       - cc      
 
   cc:
-    image: store/softwareag/commandcentral:10.1.0.1-server
+    image: store/softwareag/commandcentral-server:${TAG}
     ports:
       - "8090:8090"
       - "8091:8091"

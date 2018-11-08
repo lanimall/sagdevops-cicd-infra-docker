@@ -1,13 +1,27 @@
+ARG PARENT_BUILDER
+ARG PARENT_IMAGE
+
 # MUST start with builder image to run provisioning using template.yaml
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+FROM $PARENT_BUILDER as builder
 
-# This is the same as the unmanaged one + management support
-FROM softwareag/dbc:10.1
+FROM $PARENT_IMAGE
 
-### ADD management support
+MAINTAINER fabien.sanglier@softwareaggov.com
+
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client
-ENV PATH=$PATH:$CC_CLI_HOME/bin
-COPY --from=builder $SAG_HOME/profiles/SPM/ $SAG_HOME/profiles/SPM/
-COPY --from=builder $SAG_HOME/CommandCentral/client/ $SAG_HOME/CommandCentral/client/
+ENV EXIT_AFTER_COMMAND true
+
+# Set path to the main executable folder in the IS profile
+ENV PATH=$PATH:/bin:/usr/bin:$CC_CLI_HOME/bin
+
+COPY --from=builder --chown=1724:1724 $SAG_HOME/ $SAG_HOME/
+
+LABEL com.softwareag.product="wM Database Configurator" \com.softwareag.product.version="10.3"
+
+# expose any ports from runtimes defined in the template.yaml
 EXPOSE 8092 8093
-### end manage
+
+#add entrypoint in the global bin
+ADD *.sh /usr/bin/
+
+ENTRYPOINT ["entrypoint.sh"]

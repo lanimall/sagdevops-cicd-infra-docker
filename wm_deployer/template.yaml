@@ -1,4 +1,4 @@
-alias: container
+alias: sag-deployer
 description: Software AG Deployer
 
 environments:
@@ -9,8 +9,7 @@ environments:
     deployer.primary.port: 5555
     deployer.diagnostic.port: 9999
     deployer.jmx.port: 8094
-    deployer.fixes:
-      - wMFix.integrationServer.Core
+    deployer.fixes: ALL
 
 layers:
   runtime:
@@ -34,4 +33,4 @@ templates:
 
 provision:
   default:
-    runtime: local
+    runtime: node

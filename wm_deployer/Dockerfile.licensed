@@ -1,4 +1,8 @@
-FROM softwareag/deployer:10.1
+ARG PARENT_IMAGE
+
+FROM $PARENT_IMAGE
+
+MAINTAINER fabien.sanglier@softwareaggov.com
 
 # copy license file in the right place
 COPY licenseKey.xml $SAG_HOME/IntegrationServer/instances/$INSTANCE_NAME/config/licenseKey.xml

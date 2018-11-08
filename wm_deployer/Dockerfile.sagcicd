@@ -1,9 +1,0 @@
-# Use the sagdevops-ci-assets-builder to get the latest SAG assets for ci/ccd
-FROM registry.docker.tests:5000/softwareag/sagdevops-ci-assets-builder as builder
-
-# This is the standard deployer image
-FROM softwareag/deployer:10.1
-
-ARG SAG_CI_HOME
-
-ADD --from=builder /sagdevops-ci-assets $SAG_CI_HOME/

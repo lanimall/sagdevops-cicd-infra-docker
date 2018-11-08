@@ -1,10 +1,10 @@
-alias: container
+alias: sag-testsuite
 
 environments:
   default:
-    repo.product: products
-    repo.fix:     fixes
-    designer.fixes: []
+    repo.product:   products
+    repo.fix:       fixes
+    designer.fixes: ALL
 
 layers:
   runtime:
@@ -23,4 +23,4 @@ templates:
 
 provision:
   default:
-    runtime: local
+    runtime: node

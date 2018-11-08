@@ -1,0 +1,70 @@
+version: "3.0"
+
+services:
+
+  ## NOTE: Not necessary to push to a docker registry, as this is used as an intermediary image only
+  ## which is why I don't include the ${REG} prefix on image (but you can add it if that's ok with your use case)
+  deployer_builder:
+    image: softwareag_ccbuild/deployer_builder:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.builder
+      args:
+        PARENT_IMAGE: softwareag_ccbuild/commandcentral-builder:${TAG}
+
+  deployer_managed:
+    image: ${REG}softwareag_ccbuild/deployer_managed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.managed
+      args:
+        PARENT_BUILDER: softwareag_ccbuild/deployer_builder:${TAG}
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/java:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+      - "8092"
+      - "8093"
+    depends_on:
+      - deployer_builder
+
+  deployer_managed_licensed:
+    image: ${REG}softwareag_ccbuild/deployer_managed_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.licensed
+      args:
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/deployer_managed:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+      - "8092"
+      - "8093"
+    depends_on:
+      - deployer_managed
+
+  deployer:
+    image: ${REG}softwareag_ccbuild/deployer:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.unmanaged
+      args:
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/deployer_managed:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+    depends_on:
+      - deployer_managed
+
+  deployer_licensed:
+    image: ${REG}softwareag_ccbuild/deployer_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.licensed
+      args:
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/deployer:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+    depends_on:
+      - deployer

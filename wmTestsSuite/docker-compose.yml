@@ -2,19 +2,13 @@ version: "3.0"
 
 services:
   wmtestsuite:
-    image: softwareag/wmtestsuite:10.1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${REG}softwareag_ccbuild/wmtestsuite:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
 
   wmtestsuite_managed:
-    image: softwareag/wmtestsuite_managed:10.1
-    build:
-      context: .    
-      dockerfile: Dockerfile.managed
+    image: ${REG}softwareag_ccbuild/wmtestsuite_managed:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
@@ -24,10 +18,10 @@ services:
       - CC_SERVER=cc
       - CC_AUTO_REGISTER=1
     links:
-      - cc      
+      - cc
 
   cc:
-    image: store/softwareag/commandcentral:10.1.0.1-server
+    image: store/softwareag/commandcentral-server:${TAG}
     ports:
       - "8090:8090"
       - "8091:8091"

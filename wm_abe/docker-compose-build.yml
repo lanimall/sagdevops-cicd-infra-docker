@@ -1,31 +1,34 @@
 version: "3.0"
 
 services:
+
+  ## NOTE: Not necessary to push to a docker registry, as this is used as an intermediary image only
+  ## which is why I don't include the ${REG} prefix on image (but you can add it if that's ok with your use case)
   abe_builder:
-    image: custom/softwareag/abe_builder:${TAG}
+    image: softwareag_ccbuild/abe_builder:${TAG}
     build:
       context: .
       dockerfile: Dockerfile.builder
       args:
-        PARENT_IMAGE: ${REG}softwareag/commandcentral-builder:${TAG}
+        PARENT_IMAGE: softwareag_ccbuild/commandcentral-builder:${TAG}
 
   abe_managed:
-    image: ${REG}softwareag/abe_managed:${TAG}
+    image: ${REG}softwareag_ccbuild/abe_managed:${TAG}
     build:
       context: .
       dockerfile: Dockerfile.managed
       args:
-        PARENT_BUILDER: custom/softwareag/abe_builder:${TAG}
-        PARENT_IMAGE: ${REG}softwareag/java:${TAG}
+        PARENT_BUILDER: softwareag_ccbuild/abe_builder:${TAG}
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/java:${TAG}
     depends_on:
       - abe_builder
 
   abe:
-    image: ${REG}softwareag/abe:${TAG}
+    image: ${REG}softwareag_ccbuild/abe:${TAG}
     build:
       context: .
       dockerfile: Dockerfile.unmanaged
       args:
-        PARENT_IMAGE: ${REG}softwareag/abe_managed:${TAG}
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/abe_managed:${TAG}
     depends_on:
       - abe_managed

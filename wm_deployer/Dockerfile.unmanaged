@@ -1,0 +1,7 @@
+ARG PARENT_IMAGE
+
+FROM $PARENT_IMAGE
+
+MAINTAINER fabien.sanglier@softwareaggov.com
+
+RUN rm -Rf $SAG_HOME/profiles/SPM $SAG_HOME/CommandCentral

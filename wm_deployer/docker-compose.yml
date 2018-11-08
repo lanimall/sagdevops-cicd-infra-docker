@@ -2,19 +2,13 @@ version: "3.0"
 
 services:
   deployer:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: softwareag/deployer:10.1
+    image: ${REG}softwareag_ccbuild/deployer:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
 
   deployer_managed:
-    build:
-      context: .    
-      dockerfile: Dockerfile.managed
-    image: softwareag/deployer-managed:10.1
+    image: ${REG}softwareag_ccbuild/deployer_managed:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
@@ -23,36 +17,11 @@ services:
     environment:
       - CC_SERVER=cc
       - CC_AUTO_REGISTER=1
-    depends_on:
-      - cc   
-
-  deployer_licensed:
-    build:
-      context: .
-      dockerfile: Dockerfile.licensed
-    image: softwareag/deployer-licensed:10.1
-    ports:
-      - "5555:5555"
-      - "9999:9999"
-
-  deployer_managed_licensed:
-    build:
-      context: .
-      dockerfile: Dockerfile.managed.licensed
-    image: softwareag/deployer-managed-licensed:10.1
-    ports:
-      - "5555:5555"
-      - "9999:9999"
-      - "8092:8092"
-      - "8093:8093"
-    environment:
-      - CC_SERVER=cc
-      - CC_AUTO_REGISTER=1
-    depends_on:
-      - cc
+    links:
+      - cc      
 
   cc:
-    image: store/softwareag/commandcentral:10.1.0.1-server
+    image: store/softwareag/commandcentral-server:${TAG}
     ports:
       - "8090:8090"
       - "8091:8091"

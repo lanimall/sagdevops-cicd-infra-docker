@@ -1,11 +1,9 @@
 #!/bin/sh
 
 # if managed image (SPM is present)
-if [ -d $SAG_HOME/profiles/SPM/bin ]; then
-    # self-register
-    $SAG_HOME/profiles/SPM/bin/register.sh
-    # start SPM in background
-    $SAG_HOME/profiles/SPM/bin/startup.sh
+if [ -d "$SAG_HOME/profiles/SPM/bin" ]; then
+    # start spm and self-register
+    $SAG_HOME/register.sh
 fi
 
 echo "Remove old logs"

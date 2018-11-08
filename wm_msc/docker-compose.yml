@@ -2,19 +2,13 @@ version: "3.0"
 
 services:
   msc:
-    image: softwareag/msc:10.1
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${REG}softwareag_ccbuild/webmethods-microservicesruntime:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
 
   msc_managed:
-    image: softwareag/msc_managed:10.1
-    build:
-      context: .    
-      dockerfile: Dockerfile.managed
+    image: ${REG}softwareag_ccbuild/webmethods-microservicesruntime_managed:${TAG}
     ports:
       - "5555:5555"
       - "9999:9999"
@@ -27,7 +21,7 @@ services:
       - cc      
 
   cc:
-    image: store/softwareag/commandcentral:10.1.0.1-server
+    image: store/softwareag/commandcentral-server:${TAG}
     ports:
       - "8090:8090"
       - "8091:8091"

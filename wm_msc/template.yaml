@@ -1,32 +1,44 @@
-alias: container
+alias: sag-msc-server
+description: Microservices container instance
 
 environments:
   default:
-     repo.product: products
-     repo.fix:     fixes
+    repo.product: products
+    repo.fix:     fixes
+    is.instance.name:   default             # Instance name
+    is.primary.port:    5555                # Primary port number
+    is.diagnostic.port: 9999                # Dialgnostic port number
+    is.jmx.port:        8094                # JMX port number
+    is.memory.init:     64                  # Initial memory size
+    is.memory.max:      256                 # Maximum memory size
+    is.install.service: false
+    is.fixes:                               # Minimally recommended set of fixes 
+      - wMFix.integrationServer.Core        # Integration Server Core fix
 
 layers:
   runtime:
     productRepo: ${repo.product}
     fixRepo:     ${repo.fix}
-    templates:   msc-server
+    templates:
+      - msc-server
 
 templates:
   msc-server:
-    fixes: wMFix.integrationServer.Core
+    fixes: ${is.fixes}
     products:
       MSC:
-        default: 
-          primary.port:    5555
-          diagnostic.port: 9999
-          jmx.port:        8094
+        ${is.instance.name}: 
+          primary.port:    ${is.primary.port}
+          diagnostic.port: ${is.diagnostic.port}
+          jmx.port:        ${is.jmx.port}
+          install.service: ${is.install.service}
           configuration:
-            OSGI-IS_${instance.name}:
+            OSGI-IS_${is.instance.name}:
               COMMON-MEMORY:
                 COMMON-MEMORY:
-                  InitSize: 64
-                  MaxSize:  256
+                  InitSize: ${is.memory.init}
+                  MaxSize:  ${is.memory.max}
             
 provision:
   default:
-    runtime: local
+    runtime: node

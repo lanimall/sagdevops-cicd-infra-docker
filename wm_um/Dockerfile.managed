@@ -1,14 +1,49 @@
+ARG PARENT_BUILDER
+ARG PARENT_IMAGE
+
 # MUST start with builder image to run provisioning using template.yaml
+FROM $PARENT_BUILDER as builder
 
-FROM store/softwareag/commandcentral:10.1.0.1-builder as builder
+FROM $PARENT_IMAGE
 
-# This is the same as the unmanaged one + management support
-FROM softwareag/umserver:10.1
+MAINTAINER fabien.sanglier@softwareaggov.com
 
-### ADD management support
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client
-ENV PATH=$PATH:$CC_CLI_HOME/bin
-COPY --from=builder $SAG_HOME/profiles/SPM/ $SAG_HOME/profiles/SPM/
-COPY --from=builder $SAG_HOME/CommandCentral/client/ $SAG_HOME/CommandCentral/client/
-EXPOSE 8092 8093
-### end manage
+ENV UM_HOME $SAG_HOME/UniversalMessaging
+ENV REALM umserver
+
+COPY --from=builder --chown=1724:1724 $SAG_HOME/ $SAG_HOME/
+
+# Copy in the entrypoint script to facilitate launching the realm server
+COPY *.sh $UM_HOME/
+
+# Current working directory for all commands. This is where the UM installation is copied to within the image.
+WORKDIR $UM_HOME
+
+# Path gives access to 'umctx' and 'java', classpath gives access to all UM libraries
+ENV PATH=$PATH:/bin:/usr/bin:$CC_CLI_HOME/bin:$UM_HOME/:$JAVA_HOME/bin/\
+    CLASSPATH=lib/*
+
+# Redirect plugin logs to the same place as the realm logs (i.e. stdout, to be captured by Docker's logging system)
+# This is included for the benefit of having complete logging via Docker, but you may prefer to remove this line if you want the plugin logs
+# segregated in separate files, rather than interleaved with the main realm server log
+#RUN cd /um_home/server/umserver/; mkdir -p plugins/log/; cd plugins/log/; rm -f *; ln -s /dev/stdout error.log; ln -s /dev/stdout plugin.log; ln -s /dev/stdout access.log
+
+# Remove state from the the installation to give you a 'clean slate' w.r.t licensing, keys, configuration and state
+RUN rm -f `find $UM_HOME/ -name *.jks`; rm -rf $UM_HOME/server/license/;rm -rf $UM_HOME/server/$REALM/data/
+
+# Default realm name, can be customised by changing this line, or overriding this variable when running the image for the first time. After
+# the image has been run once it is too late to change the realm name in subsequent derived images, as it gets baked into persistent
+# configuration.
+
+# Extra properties to pass to the realm server, intended for settings that can only be configured at realm server startup. The default here
+# is to ask it to start it without using low-latency mode (CORE_SPIN), but this environment variable can be overridden when running the image.
+ENV SERVER_OPTS_EXTRA -DCORE_SPIN=false
+
+LABEL com.softwareag.product="SoftwareAG Universal Messaging" \com.softwareag.product.version="10.3" \com.softwareag.webmethodscloud.primaryPort="$UM_PORT"
+
+# Expose the NSP/NHP port that the realm server starts an interface for by default
+EXPOSE $UM_PORT 8092 8093
+
+# The default operation for the image is to start a realm server
+CMD ["entrypoint.sh"]

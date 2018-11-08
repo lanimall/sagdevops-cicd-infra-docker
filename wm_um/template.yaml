@@ -49,4 +49,4 @@ templates:
             
 provision:
   default:
-    runtime: local
+    runtime: node

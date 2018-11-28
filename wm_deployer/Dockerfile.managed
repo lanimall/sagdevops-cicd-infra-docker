@@ -8,12 +8,13 @@ FROM $PARENT_IMAGE
 
 MAINTAINER fabien.sanglier@softwareaggov.com
 
+ENV ANT_HOME $SAG_HOME/common/lib/ant
 ENV CC_CLI_HOME=$SAG_HOME/CommandCentral/client
 ENV INSTANCE_NAME default
 ENV EXIT_AFTER_COMMAND true
 
-# Set path to the main executable folder in the IS profile
-ENV PATH=$PATH:/bin:/usr/bin:$CC_CLI_HOME/bin
+# Set path
+ENV PATH=$PATH:/bin:/usr/bin:$ANT_HOME/bin:$CC_CLI_HOME/bin
 
 COPY --from=builder --chown=1724:1724 $SAG_HOME/ $SAG_HOME/
 

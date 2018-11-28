@@ -40,3 +40,31 @@ services:
       - "9999"
     depends_on:
       - msc_managed
+
+  msc_managed_licensed:
+    image: ${REG}softwareag_ccbuild/webmethods-microservicesruntime_managed_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.licensed
+      args:
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/webmethods-microservicesruntime_managed:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+      - "8092"
+      - "8093"
+    depends_on:
+      - msc_managed
+
+  msc_licensed:
+    image: ${REG}softwareag_ccbuild/webmethods-microservicesruntime_licensed:${TAG}
+    build:
+      context: .
+      dockerfile: Dockerfile.licensed
+      args:
+        PARENT_IMAGE: ${REG}softwareag_ccbuild/webmethods-microservicesruntime:${TAG}
+    expose:
+      - "5555"
+      - "9999"
+    depends_on:
+      - msc

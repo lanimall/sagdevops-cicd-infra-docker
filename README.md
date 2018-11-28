@@ -205,14 +205,22 @@ https://github.com/SoftwareAG/sagdevops-templates
 
 ## Optional Non-SoftwareAG Components for CI/CD
 
+If you want to test things locally with CI/CD construct, I created 3 extra docker images:
+ - docker registry (based on default docker registry V2... more at https://docs.docker.com/registry/)
+ - git repository (based on GOGS -- https://gogs.io)
+ - automated build server (jenkins -- https://jenkins.io)
+
 ### Start Docker Registry
 
-Follow instructions at [docker_registry](docker_registry/readme.md)
+If you want to test things out with a local registry, I created a simple docker-compose 
+that will start a local "full-fledge" docker registry as well as a simple WEB-UI for that registry.
+
+Follow instructions at [docker_registry](docker_registry/nginx/readme.md)
 
 Then, start with:
 
 ```
-$ cd docker_registry
+$ cd docker_registry/nginx/
 $ docker-compose up -d
 ```
 
@@ -221,6 +229,8 @@ Accessible at:
  * https://registryweb.docker.tests
 
 ### Start Git Server
+
+If you want to test things out with a local GIT repo, I've set up a simple GIT image based on GOGS (https://gogs.io)
 
 ```
 $ cd gitserver

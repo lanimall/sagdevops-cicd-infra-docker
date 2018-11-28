@@ -193,6 +193,25 @@ At the end, you should have 3 images in your local repository:
  * registry.docker.tests/softwareag_ccbuild/wmtestsuite_managed:10.3
  * softwareag_ccbuild/wmtestsuite_builder:10.3
  
+### Create webMethods Microservices Runtime image
+
+NOTE: For the microservice runtime, it is available on docker store (at https://store.docker.com/images/softwareag-webmethods-microservicesruntime)
+But we can also recreate that image using command central as well, using the same concepts.
+A plausible reason to do that versus using the image from docker store directly 
+would be to create a customized version of the microservicesruntime for your specific environment.
+
+Condensed command below:
+
+```
+cd wm_msc
+docker-compose -f docker-compose-build.yml build
+```
+
+At the end, you should have 3 images in your local repository:
+ * registry.docker.tests/softwareag_ccbuild/webmethods-microservicesruntime:10.3
+ * registry.docker.tests/softwareag_ccbuild/webmethods-microservicesruntime_managed:10.3
+ * softwareag_ccbuild/webmethods-microservicesruntime_builder
+ 
 ### Create other images...
 
 The library of builds in this project is not exhaustive by any means...
